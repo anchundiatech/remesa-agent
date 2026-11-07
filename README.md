@@ -155,25 +155,42 @@ Cada decisión queda registrada con su **justificación** para que el usuario en
 - **Agente:** TypeScript (o Python) + LLM con herramientas (tool calling)
 - **Stellar:** `@stellar/stellar-sdk` / `stellar-sdk`, Horizon, Soroban RPC
 - **Notificaciones:** <!-- WhatsApp / Telegram / SMS / email -->
-- **Frontend (opcional):** <!-- Next.js + Freighter -->
+- **Front:** <!-- Next.js + Freighter -->
 
 ## 📁 Estructura del repositorio
 
+El proyecto está dividido en tres áreas, una por persona del equipo. Cada carpeta tiene su propio README con tareas e interfaces.
+
 ```
 remesa-agent/
-├── contracts/
-│   └── escrow/            # Contrato Soroban (Rust)
-├── agent/
+├── blockchain/            # ⛓️ Stellar: contrato de escrow (Soroban) y scripts de testnet
+│   ├── contracts/escrow/
+│   └── scripts/
+├── agent/                 # 🧠 Agente: tasa, decisión, ejecución y aviso
 │   ├── src/
 │   │   ├── policy/        # Lógica de decisión (cuándo enviar)
 │   │   ├── price/         # Fuentes de tasa USDC → COP
 │   │   ├── stellar/       # Llamadas al contrato y pathPayment
 │   │   └── notify/        # Mensajes al destinatario
 │   └── tests/
-├── frontend/              # (opcional) UI para remitente
-├── scripts/               # Despliegue y datos de prueba en testnet
+├── front/                 # 🖥️ Interfaz del remitente y vista del destinatario
+│   └── src/
 ├── docs/                  # Diagramas y notas
+├── .env.example
 └── README.md
+```
+
+| Área | Carpeta | Entrega a los demás |
+|---|---|---|
+| ⛓️ Blockchain | [`blockchain/`](blockchain/README.md) | `ESCROW_CONTRACT_ID` y funciones del contrato |
+| 🧠 Agente | [`agent/`](agent/README.md) | API de estado, tasa y decisiones |
+| 🖥️ Front | [`front/`](front/README.md) | Experiencia del remitente y del destinatario |
+
+```mermaid
+flowchart LR
+    F[🖥️ Front] -->|create_escrow / cancel / refund| B[⛓️ Contrato escrow]
+    F -->|instrucción y estado| A[🧠 Agente]
+    A -->|release con tope / get_escrow| B
 ```
 
 ## 🚀 Instalación y ejecución
@@ -241,9 +258,11 @@ Guion sugerido:
 
 ## 👥 Equipo
 
-| Nombre | Rol | Contacto |
-|---|---|---|
-| <!-- --> | <!-- --> | <!-- --> |
+| Nombre | Área | Responsabilidad | Contacto |
+|---|---|---|---|
+| <!-- --> | ⛓️ Blockchain (Stellar) | Contrato de escrow, despliegue en testnet, pathPayment / anchor | <!-- --> |
+| <!-- --> | 🧠 Agente | Tasa, política de decisión, ejecución y notificaciones | <!-- --> |
+| <!-- --> | 🖥️ Front | Wallet, creación del escrow, seguimiento y vista del destinatario | <!-- --> |
 
 ## 📄 Licencia
 
